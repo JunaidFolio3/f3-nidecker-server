@@ -1,9 +1,5 @@
 class Api::V1::TaxCodesController < ApplicationController
 
-  def getTaxCode
-    render json: {status: 'SUCCESS', message:'Loaded tax codes', data:'taxCodesObj'},status: :ok
-  end
-  
   def executeDBOperationForTaxCode
     taxCodesData = params[:_json]
     taxCodeResponses = Array.new()
@@ -39,16 +35,11 @@ class Api::V1::TaxCodesController < ApplicationController
       )
      
     if taxcode.save
-      # repeated code ===========
-      resultTaxCode = taxcode.as_json
-      resultTaxCode[:nsid] = taxCodeObj[:nsid]
-      resultTaxCode[:status_id] = '2'
-      resultTaxCode[:operation_id] = taxCodeObj[:operation_id]
-      resultTaxCode[:recordtype_id] = taxCodeObj[:recordtype_id]
-      # =========================
+      resultTaxCode = appendDataInResultTaxCode(taxCodeObj, taxcode)
       return  {status: 'SUCCESS', message:'Taxcode created', data:resultTaxCode}
     else
-      return  {status: 'ERROR', message:'Taxcode not created', data:taxcode.errors},status: :unprocessable_entity
+      # return  {status: 'ERROR', message:'Taxcode not created', data:taxcode.errors},status: :unprocessable_entity
+      return  {status: 'ERROR', message:'Taxcode not created', data:[]}
     end
   end
 
@@ -60,13 +51,7 @@ class Api::V1::TaxCodesController < ApplicationController
         :name => taxCodeObj[:name],
         :rate => taxCodeObj[:rate]
       )
-      # repeated code ===========
-      resultTaxCode = taxcode.as_json
-      resultTaxCode[:nsid] = taxCodeObj[:nsid]
-      resultTaxCode[:status_id] = '2'
-      resultTaxCode[:operation_id] = taxCodeObj[:operation_id]
-      resultTaxCode[:recordtype_id] = taxCodeObj[:recordtype_id]
-      # =========================
+      resultTaxCode = appendDataInResultTaxCode(taxCodeObj, taxcode)
       return {status: 'SUCCESS', message:'Taxcode Updated', data:resultTaxCode}
     else
       # return {status: 'ERROR', message:'taxcode not updated', data:'taxcode.errors'},status: :unprocessable_entity
@@ -75,22 +60,25 @@ class Api::V1::TaxCodesController < ApplicationController
   end
 
   def deleteTaxCode(taxCodeObj)
-    puts "deleteTaxCode:taxCodeObj: #{taxCodeObj}"
+    # puts "deleteTaxCode:taxCodeObj: #{taxCodeObj}"
     taxcode = TaxCode.find_by_id(taxCodeObj[:externalid])
     if !taxcode.nil?
       taxcode.destroy
-      # repeated code ===========
-      resultTaxCode = taxcode.as_json
-      resultTaxCode[:nsid] = taxCodeObj[:nsid]
-      resultTaxCode[:status_id] = '2'
-      resultTaxCode[:operation_id] = taxCodeObj[:operation_id]
-      resultTaxCode[:recordtype_id] = taxCodeObj[:recordtype_id]
-      # =========================
+      resultTaxCode = appendDataInResultTaxCode(taxCodeObj, taxcode)
       return {status: 'SUCCESS', message:'Taxcode Deleted', data:resultTaxCode}
     else
       # return {status: 'ERROR', message:'taxcode not Deleted', data:'taxcode.errors'},status: :unprocessable_entity
       return {status: 'ERROR', message:'taxcode not exist', data:[]}
     end
+  end
+
+  def appendDataInResultTaxCode(taxCodeObj, taxcode)
+    resultTaxCode = taxcode.as_json
+    resultTaxCode[:nsid] = taxCodeObj[:nsid]
+    resultTaxCode[:status_id] = '2'
+    resultTaxCode[:operation_id] = taxCodeObj[:operation_id]
+    resultTaxCode[:recordtype_id] = taxCodeObj[:recordtype_id]
+    return resultTaxCode
   end
 
 end
