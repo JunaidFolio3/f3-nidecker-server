@@ -16,6 +16,9 @@
 #
 default: &default
   adapter: postgresql
+  username: postgres
+  host: 127.0.0.1
+  password: 12345
   encoding: unicode
   # For details on connection pooling, see Rails configuration guide
   # http://guides.rubyonrails.org/configuring.html#database-pooling
@@ -23,7 +26,7 @@ default: &default
 
 development:
   <<: *default
-  database: f3-nidecker-server_development
+  database: nidecker_db_development
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -57,7 +60,7 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: f3-nidecker-server_test
+  database: nidecker_db_test
 
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -80,6 +83,6 @@ test:
 #
 production:
   <<: *default
-  database: f3-nidecker-server_production
+  database: nidecker_db_production
   username: f3-nidecker-server
   password: <%= ENV['F3-NIDECKER-SERVER_DATABASE_PASSWORD'] %>
