@@ -9,23 +9,7 @@ class Api::V1::TaxCodesController < ApplicationController
     taxCodeResponses = Array.new()
 
     i = 0
-    # puts "request body: #{taxCodesData}"
     while i < taxCodesData.length  do
-      # puts "=====+++++++++++++#{i}=====+++++++++++++#{taxCodesData[i][:operation_id] == '1' } #{taxCodesData[i][:operation_id]}"
-
-    #   if taxCodesData[i][:operation_id] == '1' 
-    #     # puts "=====+++++++++++++createTaxCode=====+++++++++++++"
-    #     createTaxCode(taxCodesData[i])
-    #   elsif taxCodesData[i][:operation_id] == '2'
-    #     # puts "=====+++++++++++++updateTaxCode=====+++++++++++++"
-    #     updateTaxCode(taxCodesData[i])
-    #   elsif taxCodesData[i][:operation_id] == '3' 
-    #     # puts "=====+++++++++++++deleteTaxCode=====+++++++++++++"
-    #     deleteTaxCode(taxCodesData[i])
-    #   end
-    #   # createUpdateTaxCodes(taxCodesArr[i][:internalid], taxCodesArr[i][:name], taxCodesArr[i][:rate])
-    #   i +=1
-    # end
 
       case taxCodesData[i][:operation_id]
       when '1'
@@ -45,8 +29,6 @@ class Api::V1::TaxCodesController < ApplicationController
     end
     
     render json: {data:taxCodeResponses},status: :ok
-    # createOrUpdateTaxCodes()
-    # create()
   end
 
   def createTaxCode(taxCodeObj)
@@ -110,56 +92,5 @@ class Api::V1::TaxCodesController < ApplicationController
       return {status: 'ERROR', message:'taxcode not exist', data:[]}
     end
   end
-
-
-  # def createOrUpdateTaxCodes
-  #   i = 0
-  #   taxCodesArr = params[:_json]
-  #   # taxCodesArr = params
-  #   puts "request body length: #{taxCodesArr.length}"
-  #   puts "request body taxCodesArr: #{taxCodesArr}"
-  #   while i < taxCodesArr.length  do
-  #      createUpdateTaxCodes(taxCodesArr[i][:internalid], taxCodesArr[i][:name], taxCodesArr[i][:rate])
-  #      i +=1
-  #   end
-
-  #   render json: {status: 'SUCCESS', body:true, data:taxCodesArr, count: taxCodesArr.length},status: :ok
-  # end
-
-  # def createUpdateTaxCodes(internalid, name, rate)
-  #     @tax = TaxCode.find_by_internalid(internalid) || TaxCode.new(:internalid => internalid)
-  #     @tax.update_attributes(
-  #             :name => name,
-  #             :rate => rate
-  #         )
-  # end
-
-  # def create
-  #   # taxCodesArr = params[:_json]
-  #   # puts "request taxcode_params: #{taxCodesArr}"
-  #   taxcode = TaxCode.new(taxcode_params)
-     
-
-  #   if taxcode.save
-  #     render json: {status: 'SUCCESS', message:'Saved taxcode', data:taxcode},status: :ok
-  #   else
-  #     render json: {status: 'ERROR', message:'taxcode not saved', data:taxcode.errors},status: :unprocessable_entity
-  #   end
-  # end
-
-  # private
-
-  # def taxcode_params
-  #   params.permit(:name, :rate)
-  # end
-
-  # def update
-  #   taxcode = taxcode.find(params[:id])
-  #   if taxcode.update_attributes(taxcode_params)
-  #     render json: {status: 'SUCCESS', message:'Updated taxcode', data:taxcode},status: :ok
-  #   else
-  #     render json: {status: 'ERROR', message:'taxcode not updated', data:taxcode.errors},status: :unprocessable_entity
-  #   end
-  # end
 
 end
