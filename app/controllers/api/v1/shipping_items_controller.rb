@@ -39,7 +39,7 @@ class Api::V1::ShippingItemsController < ApplicationController
       return  {status: 'SUCCESS', message:'Shipping Item created', data:resultShippingItem}
     else
       # return  {status: 'ERROR', message:'Shipping Item not created', data:shippingitem.errors},status: :unprocessable_entity
-      return  {status: 'ERROR', message:'Shipping Item not created', data:[]}
+      return  {status: 'ERROR', message:'Shipping Item not created', data:{}}
     end
   end
 
@@ -55,7 +55,7 @@ class Api::V1::ShippingItemsController < ApplicationController
       return {status: 'SUCCESS', message:'Shipping Item Updated', data:resultShippingItem}
     else
       # return {status: 'ERROR', message:'Shipping Item not updated', data:'shippingitem.errors'},status: :unprocessable_entity
-      return {status: 'ERROR', message:'Shipping Item not exist', data:[]}
+      return {status: 'ERROR', message:'Shipping Item not exist', data:{}}
     end
   end
 
@@ -68,16 +68,20 @@ class Api::V1::ShippingItemsController < ApplicationController
       return {status: 'SUCCESS', message:'Shipping Item Deleted', data:resultShippingItem}
     else
       # return {status: 'ERROR', message:'Shipping Item not Deleted', data:'shippingitem.errors'},status: :unprocessable_entity
-      return {status: 'ERROR', message:'Shipping Item not exist', data:[]}
+      return {status: 'ERROR', message:'Shipping Item not exist', data:{}}
     end
   end
 
   def appendDataInResultShippingItem(shippingItemObj, shippingitem)
     resultShippingItem = shippingitem.as_json
+    syncdate = shippingitem[:updated_at].to_s # convert date to string
     resultShippingItem[:nsid] = shippingItemObj[:nsid]
+    resultShippingItem[:internalid] = shippingItemObj[:internalid]
     resultShippingItem[:status_id] = '2'
     resultShippingItem[:operation_id] = shippingItemObj[:operation_id]
     resultShippingItem[:recordtype_id] = shippingItemObj[:recordtype_id]
+    resultShippingItem[:updated_at] = Date.parse(syncdate).strftime('%m/%d/%Y') # 07/13/2018
+    
     return resultShippingItem
   end
 

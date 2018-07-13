@@ -1,4 +1,13 @@
+require 'date'
+
 class Api::V1::TaxCodesController < ApplicationController
+
+  def parseDate
+    myDate = "date: #{Date.parse('2018-07-13T08:09:54.135Z').strftime('%m/%d/%Y')}"
+    puts myDate
+    render json: {data:myDate}
+
+  end
 
   def executeDBOperationForTaxCode
     taxCodesData = params[:_json]
@@ -39,7 +48,7 @@ class Api::V1::TaxCodesController < ApplicationController
       return  {status: 'SUCCESS', message:'Taxcode created', data:resultTaxCode}
     else
       # return  {status: 'ERROR', message:'Taxcode not created', data:taxcode.errors},status: :unprocessable_entity
-      return  {status: 'ERROR', message:'Taxcode not created', data:[]}
+      return  {status: 'ERROR', message:'Taxcode not created', data:{}}
     end
   end
 
@@ -55,7 +64,7 @@ class Api::V1::TaxCodesController < ApplicationController
       return {status: 'SUCCESS', message:'Taxcode Updated', data:resultTaxCode}
     else
       # return {status: 'ERROR', message:'taxcode not updated', data:'taxcode.errors'},status: :unprocessable_entity
-      return {status: 'ERROR', message:'taxcode not exist', data:[]}
+      return {status: 'ERROR', message:'taxcode not exist', data:{}}
     end
   end
 
@@ -68,16 +77,20 @@ class Api::V1::TaxCodesController < ApplicationController
       return {status: 'SUCCESS', message:'Taxcode Deleted', data:resultTaxCode}
     else
       # return {status: 'ERROR', message:'taxcode not Deleted', data:'taxcode.errors'},status: :unprocessable_entity
-      return {status: 'ERROR', message:'taxcode not exist', data:[]}
+      return {status: 'ERROR', message:'taxcode not exist', data:{}}
     end
   end
 
   def appendDataInResultTaxCode(taxCodeObj, taxcode)
     resultTaxCode = taxcode.as_json
+    syncdate = taxcode[:updated_at].to_s # convert date to string
     resultTaxCode[:nsid] = taxCodeObj[:nsid]
+    resultTaxCode[:internalid] = taxCodeObj[:internalid]
     resultTaxCode[:status_id] = '2'
     resultTaxCode[:operation_id] = taxCodeObj[:operation_id]
     resultTaxCode[:recordtype_id] = taxCodeObj[:recordtype_id]
+    resultTaxCode[:updated_at] = Date.parse(syncdate).strftime('%m/%d/%Y') # 07/13/2018
+    
     return resultTaxCode
   end
 
