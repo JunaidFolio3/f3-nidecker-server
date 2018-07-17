@@ -38,8 +38,9 @@ class Api::V1::ShippingItemsController < ApplicationController
       resultShippingItem = appendDataInResultShippingItem(shippingItemObj, shippingitem)
       return  {status: 'SUCCESS', message:'Shipping Item created', data:resultShippingItem}
     else
+      failedResultShippingItem = appendDataWhenShippingItemFailed(shippingItemObj)
       # return  {status: 'ERROR', message:'Shipping Item not created', data:shippingitem.errors},status: :unprocessable_entity
-      return  {status: 'ERROR', message:'Shipping Item not created', data:{}}
+      return  {status: 'ERROR', message:'Shipping Item not created', data: failedResultShippingItem}
     end
   end
 
@@ -54,8 +55,9 @@ class Api::V1::ShippingItemsController < ApplicationController
       resultShippingItem = appendDataInResultShippingItem(shippingItemObj, shippingitem)
       return {status: 'SUCCESS', message:'Shipping Item Updated', data:resultShippingItem}
     else
+      failedResultShippingItem = appendDataWhenShippingItemFailed(shippingItemObj)
       # return {status: 'ERROR', message:'Shipping Item not updated', data:'shippingitem.errors'},status: :unprocessable_entity
-      return {status: 'ERROR', message:'Shipping Item not exist', data:{}}
+      return {status: 'ERROR', message:'Shipping Item not exist', data: failedResultShippingItem}
     end
   end
 
@@ -67,8 +69,9 @@ class Api::V1::ShippingItemsController < ApplicationController
       resultShippingItem = appendDataInResultShippingItem(shippingItemObj, shippingitem)
       return {status: 'SUCCESS', message:'Shipping Item Deleted', data:resultShippingItem}
     else
+      failedResultShippingItem = appendDataWhenShippingItemFailed(shippingItemObj)
       # return {status: 'ERROR', message:'Shipping Item not Deleted', data:'shippingitem.errors'},status: :unprocessable_entity
-      return {status: 'ERROR', message:'Shipping Item not exist', data:{}}
+      return {status: 'ERROR', message:'Shipping Item not exist', data: failedResultShippingItem}
     end
   end
 
@@ -83,6 +86,17 @@ class Api::V1::ShippingItemsController < ApplicationController
     resultShippingItem[:updated_at] = Date.parse(syncdate).strftime('%m/%d/%Y') # 07/13/2018
     
     return resultShippingItem
+  end
+
+  def appendDataWhenShippingItemFailed(shippingItemObj)
+    failedResultShippingItem = {}
+    failedResultShippingItem[:nsid] = shippingItemObj[:nsid]
+    failedResultShippingItem[:internalid] = shippingItemObj[:internalid]
+    failedResultShippingItem[:status_id] = '3'
+    failedResultShippingItem[:operation_id] = shippingItemObj[:operation_id]
+    failedResultShippingItem[:recordtype_id] = shippingItemObj[:recordtype_id]
+    
+    return failedResultShippingItem
   end
 
 end

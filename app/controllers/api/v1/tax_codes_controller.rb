@@ -45,10 +45,11 @@ class Api::V1::TaxCodesController < ApplicationController
      
     if taxcode.save
       resultTaxCode = appendDataInResultTaxCode(taxCodeObj, taxcode)
-      return  {status: 'SUCCESS', message:'Taxcode created', data:resultTaxCode}
+      return  {status: 'SUCCESS', message:'Taxcode created', data: resultTaxCode}
     else
+      failedResultTaxCode = appendDataWhenTaxCodeFailed(taxCodeObj)
       # return  {status: 'ERROR', message:'Taxcode not created', data:taxcode.errors},status: :unprocessable_entity
-      return  {status: 'ERROR', message:'Taxcode not created', data:{}}
+      return  {status: 'ERROR', message:'Taxcode not created', data: failedResultTaxCode }
     end
   end
 
@@ -61,10 +62,11 @@ class Api::V1::TaxCodesController < ApplicationController
         :rate => taxCodeObj[:rate]
       )
       resultTaxCode = appendDataInResultTaxCode(taxCodeObj, taxcode)
-      return {status: 'SUCCESS', message:'Taxcode Updated', data:resultTaxCode}
+      return {status: 'SUCCESS', message:'Taxcode Updated', data: resultTaxCode}
     else
+      failedResultTaxCode = appendDataWhenTaxCodeFailed(taxCodeObj)
       # return {status: 'ERROR', message:'taxcode not updated', data:'taxcode.errors'},status: :unprocessable_entity
-      return {status: 'ERROR', message:'taxcode not exist', data:{}}
+      return {status: 'ERROR', message:'taxcode not exist', data: failedResultTaxCode }
     end
   end
 
@@ -74,10 +76,11 @@ class Api::V1::TaxCodesController < ApplicationController
     if !taxcode.nil?
       taxcode.destroy
       resultTaxCode = appendDataInResultTaxCode(taxCodeObj, taxcode)
-      return {status: 'SUCCESS', message:'Taxcode Deleted', data:resultTaxCode}
+      return {status: 'SUCCESS', message:'Taxcode Deleted', data: resultTaxCode}
     else
+      failedResultTaxCode = appendDataWhenTaxCodeFailed(taxCodeObj)
       # return {status: 'ERROR', message:'taxcode not Deleted', data:'taxcode.errors'},status: :unprocessable_entity
-      return {status: 'ERROR', message:'taxcode not exist', data:{}}
+      return {status: 'ERROR', message:'taxcode not exist', data: failedResultTaxCode }
     end
   end
 
@@ -92,6 +95,17 @@ class Api::V1::TaxCodesController < ApplicationController
     resultTaxCode[:updated_at] = Date.parse(syncdate).strftime('%m/%d/%Y') # 07/13/2018
     
     return resultTaxCode
+  end
+
+  def appendDataWhenTaxCodeFailed(taxCodeObj)
+    failedResultTaxCode = {}
+    failedResultTaxCode[:nsid] = taxCodeObj[:nsid]
+    failedResultTaxCode[:internalid] = taxCodeObj[:internalid]
+    failedResultTaxCode[:status_id] = '3'
+    failedResultTaxCode[:operation_id] = taxCodeObj[:operation_id]
+    failedResultTaxCode[:recordtype_id] = taxCodeObj[:recordtype_id]
+    
+    return failedResultTaxCode
   end
 
 end
