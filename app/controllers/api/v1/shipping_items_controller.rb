@@ -31,7 +31,13 @@ class Api::V1::ShippingItemsController < ApplicationController
     # puts "createShippingItem:shippingItemObj: #{shippingItemObj}"
     shippingitem = ShippingItem.new( 
       :name => shippingItemObj[:name],
-      :rate => shippingItemObj[:rate]
+      :rate => shippingItemObj[:rate],
+      :code => shippingItemObj[:code],
+      :display_on => shippingItemObj[:display_on],
+      :admin_name => shippingItemObj[:admin_name],
+      :tracking_url => shippingItemObj[:tracking_url],
+      :tax_category_id => shippingItemObj[:tax_category_id],
+      :store_id => shippingItemObj[:store_id]
       )
      
     if shippingitem.save
@@ -49,8 +55,14 @@ class Api::V1::ShippingItemsController < ApplicationController
     shippingitem = ShippingItem.find_by_id(shippingItemObj[:externalid])
     puts "=====+++++++++++++=====+++++++++++++=====+++++++++++++= #{!shippingitem.nil?}"
     if !shippingitem.nil? && shippingitem.update_attributes(
-        :name => shippingItemObj[:name],
-        :rate => shippingItemObj[:rate]
+      :name => shippingItemObj[:name],
+      :rate => shippingItemObj[:rate],
+      :code => shippingItemObj[:code],
+      :display_on => shippingItemObj[:display_on],
+      :admin_name => shippingItemObj[:admin_name],
+      :tracking_url => shippingItemObj[:tracking_url],
+      :tax_category_id => shippingItemObj[:tax_category_id],
+      :store_id => shippingItemObj[:store_id]
       )
       resultShippingItem = appendDataInResultShippingItem(shippingItemObj, shippingitem)
       return {status: 'SUCCESS', message:'Shipping Item Updated', data:resultShippingItem}

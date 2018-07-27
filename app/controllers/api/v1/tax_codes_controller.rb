@@ -6,7 +6,6 @@ class Api::V1::TaxCodesController < ApplicationController
     myDate = "date: #{Date.parse('2018-07-13T08:09:54.135Z').strftime('%m/%d/%Y')}"
     puts myDate
     render json: {data:myDate}
-
   end
 
   def executeDBOperationForTaxCode
@@ -40,7 +39,12 @@ class Api::V1::TaxCodesController < ApplicationController
     # puts "createTaxCode:taxCodeObj: #{taxCodeObj}"
     taxcode = TaxCode.new( 
       :name => taxCodeObj[:name],
-      :rate => taxCodeObj[:rate]
+      :rate => taxCodeObj[:rate],
+      :tax_category_id => taxCodeObj[:tax_category_id],
+      :included_in_price => taxCodeObj[:included_in_price],
+      :show_rate_in_label => taxCodeObj[:show_rate_in_label],
+      :zone_id => taxCodeObj[:zone_id],
+      :store_id => taxCodeObj[:store_id]
       )
      
     if taxcode.save
@@ -58,8 +62,13 @@ class Api::V1::TaxCodesController < ApplicationController
     taxcode = TaxCode.find_by_id(taxCodeObj[:externalid])
     puts "=====+++++++++++++=====+++++++++++++=====+++++++++++++= #{!taxcode.nil?}"
     if !taxcode.nil? && taxcode.update_attributes(
-        :name => taxCodeObj[:name],
-        :rate => taxCodeObj[:rate]
+      :name => taxCodeObj[:name],
+      :rate => taxCodeObj[:rate],
+      :tax_category_id => taxCodeObj[:tax_category_id],
+      :included_in_price => taxCodeObj[:included_in_price],
+      :show_rate_in_label => taxCodeObj[:show_rate_in_label],
+      :zone_id => taxCodeObj[:zone_id],
+      :store_id => taxCodeObj[:store_id]
       )
       resultTaxCode = appendDataInResultTaxCode(taxCodeObj, taxcode)
       return {status: 'SUCCESS', message:'Taxcode Updated', data: resultTaxCode}
