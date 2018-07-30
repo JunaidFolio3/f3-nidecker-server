@@ -1,6 +1,6 @@
 require 'date'
 
-class Api::V1::TaxCodesController < ApplicationController
+class Api::V1::SpreeTaxRatesController < ApplicationController
 
   def parseDate
     myDate = "date: #{Date.parse('2018-07-13T08:09:54.135Z').strftime('%m/%d/%Y')}"
@@ -37,7 +37,7 @@ class Api::V1::TaxCodesController < ApplicationController
 
   def createTaxCode(taxCodeObj)
     # puts "createTaxCode:taxCodeObj: #{taxCodeObj}"
-    taxcode = TaxCode.new( 
+    taxcode = SpreeTaxRate.new( 
       :name => taxCodeObj[:name],
       :rate => taxCodeObj[:rate],
       :tax_category_id => taxCodeObj[:tax_category_id],
@@ -59,7 +59,7 @@ class Api::V1::TaxCodesController < ApplicationController
 
   def updateTaxCode(taxCodeObj)
     # puts "updateTaxCode:taxCodeObj: #{taxCodeObj}"
-    taxcode = TaxCode.find_by_id(taxCodeObj[:externalid])
+    taxcode = SpreeTaxRate.find_by_id(taxCodeObj[:externalid])
     puts "=====+++++++++++++=====+++++++++++++=====+++++++++++++= #{!taxcode.nil?}"
     if !taxcode.nil? && taxcode.update_attributes(
       :name => taxCodeObj[:name],
@@ -81,7 +81,7 @@ class Api::V1::TaxCodesController < ApplicationController
 
   def deleteTaxCode(taxCodeObj)
     # puts "deleteTaxCode:taxCodeObj: #{taxCodeObj}"
-    taxcode = TaxCode.find_by_id(taxCodeObj[:externalid])
+    taxcode = SpreeTaxRate.find_by_id(taxCodeObj[:externalid])
     if !taxcode.nil?
       taxcode.destroy
       resultTaxCode = appendDataInResultTaxCode(taxCodeObj, taxcode)

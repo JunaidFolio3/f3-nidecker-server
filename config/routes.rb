@@ -3,8 +3,8 @@ Rails.application.routes.draw do
   namespace 'api' do
     namespace 'v1' do
 
-      get 'taxcodes' => 'tax_codes#parseDate'
-      post 'taxcodes' => 'tax_codes#executeDBOperationForTaxCode'
+      get 'taxcodes' => 'spree_tax_rates#parseDate'
+      post 'taxcodes' => 'spree_tax_rates#executeDBOperationForTaxCode'
       post 'shippingitems' => 'shipping_items#executeDBOperationForShippingItem'
 
       resources :articles

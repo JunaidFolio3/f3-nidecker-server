@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class TaxCodeTest < ActiveSupport::TestCase
+class SpreeTaxRateTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
