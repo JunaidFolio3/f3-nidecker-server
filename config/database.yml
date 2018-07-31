@@ -1,81 +1,80 @@
 
-# # Configure Using Gemfile
-# # gem 'pg'
+# Configure Using Gemfile
+# gem 'pg'
+#
+default: &default
+  adapter: postgresql
+  username: postgres
+  host: 127.0.0.1
+  password: 12345
+  encoding: unicode
+  port: 5432
+  # For details on connection pooling, see Rails configuration guide
+  # http://guides.rubyonrails.org/configuring.html#database-pooling
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  database: nidecker_db_development
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+# c
+#   production:
+#     url: <%= ENV['DATABASE_URL'] %>
+#
+production:
+  <<: *default
+  database: nidecker_db_production
+  username: f3-nidecker-server
+  password: <%= ENV['F3-NIDECKER-SERVER_DATABASE_PASSWORD'] %>
+
+
+# # SQLite version 3.x
+# #   gem install sqlite3
+# #
+# #   Ensure the SQLite 3 gem is defined in your Gemfile
+# #   gem 'sqlite3'
 # #
 # default: &default
 #   adapter: postgresql
-#   username: postgres
-#   host: 127.0.0.1
-#   password: 12345
 #   encoding: unicode
-#   # For details on connection pooling, see Rails configuration guide
-#   # http://guides.rubyonrails.org/configuring.html#database-pooling
-#   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+#   pool: 5
+#   username: postgres
+#   password:
+#   host: localhost
 
 # development:
 #   <<: *default
-#   database: nidecker_db_development
+#   database: nidecker_rails_staging
+#   username: nidecker_staging
+#   password: stw6)dLRQQmyUir6$
 
 # # Warning: The database defined as "test" will be erased and
 # # re-generated from your development database when you run "rake".
 # # Do not set this db to the same as development or production.
 # test:
 #   <<: *default
-#   database: nidecker_db_test
+#   username: renaudkern
+#   database: nidecker_rails_test
 
-# #   production:
-# #     url: <%= ENV['DATABASE_URL'] %>
-# #
+# staging:
+#   <<: *default
+#   database: nidecker_rails_staging
+#   username: nidecker_staging
+#   password: stw6)dLRQQmyUir6$
+
 # production:
 #   <<: *default
-#   database: nidecker_db_production
-#   username: f3-nidecker-server
-#   password: <%= ENV['F3-NIDECKER-SERVER_DATABASE_PASSWORD'] %>
+#   database: nidecker_rails_production
+#   username: nidecker_production
+#   password: nud0tyt1Moi6Vi3R
 
-
-# SQLite version 3.x
-#   gem install sqlite3
-#
-#   Ensure the SQLite 3 gem is defined in your Gemfile
-#   gem 'sqlite3'
-#
-default: &default
-  adapter: postgresql
-  encoding: unicode
-  pool: 5
-  username: postgres
-  password:
-  host: localhost
-
-development:
-  <<: *default
-  database: nidecker_rails_staging
-  username: nidecker_staging
-  password: stw6)dLRQQmyUir6$
-
-# Warning: The database defined as "test" will be erased and
-# re-generated from your development database when you run "rake".
-# Do not set this db to the same as development or production.
-test:
-  <<: *default
-  username: renaudkern
-  database: nidecker_rails_test
-
-staging:
-  <<: *default
-  database: nidecker_rails_staging
-  username: nidecker_staging
-  password: stw6)dLRQQmyUir6$
-
-production:
-  <<: *default
-  database: nidecker_rails_production
-  username: nidecker_production
-  password: nud0tyt1Moi6Vi3R
-
-remote:
-  <<: *default
-  host: 127.0.0.1
-  username: tetix
-  password: rZiQAvXmpYYLdP4JYPUiM4EjvPJjpEorRywtqPZe
-  port: <%= RemoteConnectionManager.port_through_tunnel('ndk-staging-jones.nidecker.com', 5432) %>
+# remote:
+#   <<: *default
+#   host: localhost
+#   username: tetix
+#   database: nidecker_rails_staging
+#   password: rZiQAvXmpYYLdP4JYPUiM4EjvPJjpEorRywtqPZe
+#   port: <%= RemoteConnectionManager.port_through_tunnel('ndk-staging-jones.nidecker.com', 5432) %>

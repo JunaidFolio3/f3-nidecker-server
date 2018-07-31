@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_18_102637) do
+ActiveRecord::Schema.define(version: 2018_07_30_134135) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,7 +26,14 @@ ActiveRecord::Schema.define(version: 2018_07_18_102637) do
     t.string "admin_name"
     t.integer "tax_category_id"
     t.string "code"
-    t.string "store_id"
+    t.integer "store_id"
+  end
+
+  create_table "spree_shipping_method_zones", force: :cascade do |t|
+    t.integer "shipping_method_id"
+    t.integer "zone_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "tax_codes", force: :cascade do |t|
@@ -34,12 +41,13 @@ ActiveRecord::Schema.define(version: 2018_07_18_102637) do
     t.string "rate"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.float "amount"
+    t.decimal "amount", precision: 8, scale: 5
     t.datetime "delete_at"
     t.integer "tax_category_id"
-    t.float "included_in_price"
-    t.string "show_rate_in_label"
-    t.string "store_id"
+    t.boolean "included_in_price"
+    t.integer "zone_id"
+    t.integer "store_id"
+    t.boolean "show_rate_in_label"
   end
 
 end

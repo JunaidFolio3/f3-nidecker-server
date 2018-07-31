@@ -1,37 +1,52 @@
-class Api::V1::ShippingItemsController < ApplicationController
+require 'json'
+
+class Api::V1::SpreeShippingMethodsController < ApplicationController
+
+  def parseDate
+    myDate = SpreeTaxRatesController.parseDate
+    render json: {data:myDate}
+
+  end
 
   def executeDBOperationForShippingItem
-    shippingItemsData = params[:_json]
-    shippingItemResponses = Array.new()
+    begin
+      shippingItemsData = params[:_json]
+      shippingItemResponses = Array.new()
 
-    i = 0
-    while i < shippingItemsData.length  do
+      i = 0
+      while i < shippingItemsData.length  do
 
-      case shippingItemsData[i][:operation_id]
-      when '1'
-        puts "=====+++++++++++++createShippingItem=====+++++++++++++"
-        responseOfCreatedShippingItem = createShippingItem(shippingItemsData[i])
-        shippingItemResponses.push(responseOfCreatedShippingItem)
-      when '2'
-        puts "=====+++++++++++++updateShippingItem=====+++++++++++++"
-        responseOfUpdatedShippingItem = updateShippingItem(shippingItemsData[i])
-        shippingItemResponses.push(responseOfUpdatedShippingItem)
-      when '3'
-        puts "=====+++++++++++++deleteShippingItem=====+++++++++++++"
-        responseOfDeletedShippingItem = deleteShippingItem(shippingItemsData[i])
-        shippingItemResponses.push(responseOfDeletedShippingItem)
+        case shippingItemsData[i][:operation_id]
+        when '1'
+          # puts "=====+++++++++++++createShippingItem=====+++++++++++++"
+          responseOfCreatedShippingItem = createShippingItem(shippingItemsData[i])
+          # if responseOfCreatedShippingItem[:status] == 'SUCCESS'
+          #   shippingMethodId = responseOfCreatedShippingItem[:data]["id"]
+          #   SpreeShippingMethodZonesController.createShippingMethodZone(shippingMethodId)
+          # end
+          shippingItemResponses.push(responseOfCreatedShippingItem)
+        when '2'
+          # puts "=====+++++++++++++updateShippingItem=====+++++++++++++"
+          responseOfUpdatedShippingItem = updateShippingItem(shippingItemsData[i])
+          shippingItemResponses.push(responseOfUpdatedShippingItem)
+        when '3'
+          # puts "=====+++++++++++++deleteShippingItem=====+++++++++++++"
+          responseOfDeletedShippingItem = deleteShippingItem(shippingItemsData[i])
+          shippingItemResponses.push(responseOfDeletedShippingItem)
+        end
+        i +=1
       end
-      i +=1
-    end
 
-    render json: {data:shippingItemResponses},status: :ok
+      render json: {data:shippingItemResponses},status: :ok
+    rescue => ex
+      puts "ERROR: #{ex.message}"
+    end
   end
 
   def createShippingItem(shippingItemObj)
-    # puts "createShippingItem:shippingItemObj: #{shippingItemObj}"
-    shippingitem = ShippingItem.new( 
+    shippingitem = SpreeShippingMethod.new( 
       :name => shippingItemObj[:name],
-      :rate => shippingItemObj[:rate],
+      # :rate => shippingItemObj[:rate],
       :code => shippingItemObj[:code],
       :display_on => shippingItemObj[:display_on],
       :admin_name => shippingItemObj[:admin_name],
@@ -51,12 +66,10 @@ class Api::V1::ShippingItemsController < ApplicationController
   end
 
   def updateShippingItem(shippingItemObj)
-    # puts "updateShippingItem:shippingItemObj: #{shippingItemObj}"
-    shippingitem = ShippingItem.find_by_id(shippingItemObj[:externalid])
-    puts "=====+++++++++++++=====+++++++++++++=====+++++++++++++= #{!shippingitem.nil?}"
+    shippingitem = SpreeShippingMethod.find_by_id(shippingItemObj[:externalid])
     if !shippingitem.nil? && shippingitem.update_attributes(
       :name => shippingItemObj[:name],
-      :rate => shippingItemObj[:rate],
+      # :rate => shippingItemObj[:rate],
       :code => shippingItemObj[:code],
       :display_on => shippingItemObj[:display_on],
       :admin_name => shippingItemObj[:admin_name],
@@ -74,8 +87,7 @@ class Api::V1::ShippingItemsController < ApplicationController
   end
 
   def deleteShippingItem(shippingItemObj)
-    # puts "deleteShippingItem:shippingItemObj: #{shippingItemObj}"
-    shippingitem = ShippingItem.find_by_id(shippingItemObj[:externalid])
+    shippingitem = SpreeShippingMethod.find_by_id(shippingItemObj[:externalid])
     if !shippingitem.nil?
       shippingitem.destroy
       resultShippingItem = appendDataInResultShippingItem(shippingItemObj, shippingitem)

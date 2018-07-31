@@ -2,6 +2,7 @@ require 'date'
 
 class Api::V1::SpreeTaxRatesController < ApplicationController
 
+  # just for confirming APi works or not
   def parseDate
     myDate = "date: #{Date.parse('2018-07-13T08:09:54.135Z').strftime('%m/%d/%Y')}"
     puts myDate
@@ -9,43 +10,49 @@ class Api::V1::SpreeTaxRatesController < ApplicationController
   end
 
   def executeDBOperationForTaxCode
-    taxCodesData = params[:_json]
-    taxCodeResponses = Array.new()
+    begin
+      taxCodesData = params[:_json]
+      taxCodeResponses = Array.new()
 
-    i = 0
-    while i < taxCodesData.length  do
+      i = 0
+      while i < taxCodesData.length  do
 
-      case taxCodesData[i][:operation_id]
-      when '1'
-        puts "=====+++++++++++++createTaxCode=====+++++++++++++"
-        responseOfCreatedTaxCode = createTaxCode(taxCodesData[i])
-        taxCodeResponses.push(responseOfCreatedTaxCode)
-      when '2'
-        puts "=====+++++++++++++updateTaxCode=====+++++++++++++"
-        responseOfUpdatedTaxCode = updateTaxCode(taxCodesData[i])
-        taxCodeResponses.push(responseOfUpdatedTaxCode)
-      when '3'
-        puts "=====+++++++++++++deleteTaxCode=====+++++++++++++"
-        responseOfDeletedTaxCode = deleteTaxCode(taxCodesData[i])
-        taxCodeResponses.push(responseOfDeletedTaxCode)
+        case taxCodesData[i][:operation_id]
+        when '1'
+          # puts "=====+++++++++++++createTaxCode=====+++++++++++++"
+          responseOfCreatedTaxCode = createTaxCode(taxCodesData[i])
+          taxCodeResponses.push(responseOfCreatedTaxCode)
+        when '2'
+          # puts "=====+++++++++++++updateTaxCode=====+++++++++++++"
+          responseOfUpdatedTaxCode = updateTaxCode(taxCodesData[i])
+          taxCodeResponses.push(responseOfUpdatedTaxCode)
+        when '3'
+          # puts "=====+++++++++++++deleteTaxCode=====+++++++++++++"
+          responseOfDeletedTaxCode = deleteTaxCode(taxCodesData[i])
+          taxCodeResponses.push(responseOfDeletedTaxCode)
+        end
+        i +=1
       end
-      i +=1
+      
+      render json: {data:taxCodeResponses},status: :ok
+    rescue => ex
+      puts "ERROR: #{ex.message}"
     end
-    
-    render json: {data:taxCodeResponses},status: :ok
   end
 
   def createTaxCode(taxCodeObj)
+    # puts "createTaxCode:start:"
     # puts "createTaxCode:taxCodeObj: #{taxCodeObj}"
     taxcode = SpreeTaxRate.new( 
       :name => taxCodeObj[:name],
-      :rate => taxCodeObj[:rate],
+      :amount => taxCodeObj[:rate],
       :tax_category_id => taxCodeObj[:tax_category_id],
       :included_in_price => taxCodeObj[:included_in_price],
       :show_rate_in_label => taxCodeObj[:show_rate_in_label],
       :zone_id => taxCodeObj[:zone_id],
       :store_id => taxCodeObj[:store_id]
       )
+    # puts "createTaxCode:taxCodeObj:before save"
      
     if taxcode.save
       resultTaxCode = appendDataInResultTaxCode(taxCodeObj, taxcode)
@@ -55,15 +62,17 @@ class Api::V1::SpreeTaxRatesController < ApplicationController
       # return  {status: 'ERROR', message:'Taxcode not created', data:taxcode.errors},status: :unprocessable_entity
       return  {status: 'ERROR', message:'Taxcode not created', data: failedResultTaxCode }
     end
+    # puts "createTaxCode:taxCodeObj:after save"
+
   end
 
   def updateTaxCode(taxCodeObj)
     # puts "updateTaxCode:taxCodeObj: #{taxCodeObj}"
     taxcode = SpreeTaxRate.find_by_id(taxCodeObj[:externalid])
-    puts "=====+++++++++++++=====+++++++++++++=====+++++++++++++= #{!taxcode.nil?}"
+    # puts "=====+++++++++++++=====+++++++++++++=====+++++++++++++= #{!taxcode.nil?}"
     if !taxcode.nil? && taxcode.update_attributes(
       :name => taxCodeObj[:name],
-      :rate => taxCodeObj[:rate],
+      :amount => taxCodeObj[:rate],
       :tax_category_id => taxCodeObj[:tax_category_id],
       :included_in_price => taxCodeObj[:included_in_price],
       :show_rate_in_label => taxCodeObj[:show_rate_in_label],

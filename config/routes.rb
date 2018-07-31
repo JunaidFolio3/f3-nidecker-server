@@ -5,9 +5,11 @@ Rails.application.routes.draw do
 
       get 'taxcodes' => 'spree_tax_rates#parseDate'
       post 'taxcodes' => 'spree_tax_rates#executeDBOperationForTaxCode'
-      post 'shippingitems' => 'shipping_items#executeDBOperationForShippingItem'
+      post 'shippingitems' => 'spree_shipping_methods#executeDBOperationForShippingItem'
+      get 'shippingitems' => 'spree_shipping_methods#parseDate'
 
-      resources :articles
+
+      # resources :articles
     end
   end
 end
